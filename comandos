@@ -1,0 +1,12 @@
+git clone https://github.com/dunglas/symfony-docker.git myapp
+Copiar los ficheros docker-compose.debug.yml y dockerfile
+cd myapp
+
+SYMFONY_VERSION=5.4.* docker-compose -f docker-compose.yml -f docker-compose.debug.yml -f docker-compose.override.yml build
+
+docker-compose -f docker-compose.yml -f docker-compose.debug.yml -f docker-compose.override.yml up
+
+docker-compose down --remove-orphans
+
+En vscode, launch.json
+

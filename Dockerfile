@@ -90,8 +90,11 @@ ARG STABILITY="stable"
 ENV STABILITY ${STABILITY}
 
 # Allow to select skeleton version
-ARG SYMFONY_VERSION=""
-ENV SYMFONY_VERSION ${SYMFONY_VERSION}
+ARG SYMFONY_VERSION="5.4.*"
+#ENV SYMFONY_VERSION ${SYMFONY_VERSION}
+
+#ARG SERVER_NAME="myapp.wip, caddy:80"
+#ENV SERVER_NAME ${SERVER_NAME}
 
 # Download the Symfony skeleton and leverage Docker cache layers
 RUN composer create-project "${SKELETON} ${SYMFONY_VERSION}" . --stability=$STABILITY --prefer-dist --no-dev --no-progress --no-interaction; \
@@ -130,3 +133,13 @@ COPY --from=dunglas/mercure:v0.11 /srv/public /srv/mercure-assets/
 COPY --from=symfony_caddy_builder /usr/bin/caddy /usr/bin/caddy
 COPY --from=symfony_php /srv/app/public public/
 COPY docker/caddy/Caddyfile /etc/caddy/Caddyfile
+
+
+FROM symfony_php AS symfony_php_debug
+
+ARG XDEBUG_VERSION=3.1.2
+RUN set -eux; \
+	apk add --no-cache --virtual .build-deps $PHPIZE_DEPS; \
+	pecl install xdebug-$XDEBUG_VERSION; \
+	docker-php-ext-enable xdebug; \
+	apk del .build-deps
