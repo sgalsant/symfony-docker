@@ -21,8 +21,12 @@ help: ## Outputs this help screen
 	@grep -E '(^[a-zA-Z0-9_-]+:.*?##.*$$)|(^##)' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}{printf "\033[32m%-30s\033[0m %s\n", $$1, $$2}' | sed -e 's/\[32m##/[33m/'
 
 ## —— Docker 🐳 ————————————————————————————————————————————————————————————————
-build: ## Builds the Docker images
+
+rebuild: ## rebuilds images
 	@$(SYMFONY_VERSION) $(DOCKER_COMP) $(DOCKER_COMP_FILE) build --pull --no-cache
+
+build: ## Builds the Docker images
+	@$(SYMFONY_VERSION) $(DOCKER_COMP) $(DOCKER_COMP_FILE) build
 
 up: ## Start the docker hub in detached mode (no logs)
 	@$(DOCKER_COMP) $(DOCKER_COMP_FILE) up --detach
